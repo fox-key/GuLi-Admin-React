@@ -7,10 +7,10 @@ module.exports = function(app){
             changeOrigin:true,//控制服务器收到的请求头中Host的值
             pathRewrite:{'^/api':''} //重写请求路径，下面有示例解释
         }),
-        proxy.createProxyMiddleware('/api2',{
-            target:'http://localhost:5001',
+        proxy.createProxyMiddleware('/weather',{
+            target:'http://apis.juhe.cn',
             changeOrigin:true,
-            pathRewrite:{'^/api2':''}
+            pathRewrite:{'^/weather':''}
         }),
     )
 }

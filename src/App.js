@@ -18,12 +18,13 @@ export default class App extends React.Component {
 
     render() {
         return (
-            <BrowserRouter>
-                <Routes>
-                    <Route path='/login' element={<Login/>}></Route>
-                    <Route path='/' element={<Admin/>}></Route>
-                </Routes>
-            </BrowserRouter>
+            <>
+                <BrowserRouter>
+                    <Routes>
+                        <Route path='/login' element={<Login/>}></Route>
+                        <Route path='/*' element={<Admin/>}></Route>
+                    </Routes>
+                </BrowserRouter></>
         )
     }
 }

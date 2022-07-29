@@ -4,3 +4,6 @@ import ajax from './ajax'
 
 //登录
 export const reqLogin = (username,password)=>ajax('/api/login',{username,password},'POST')
+
+//天气
+export const reqWeather = (city)=>ajax('/weather/simpleWeather/query?key=cb132bd5b272f9fc07ab22f0ca328ef8',{city},'GET')

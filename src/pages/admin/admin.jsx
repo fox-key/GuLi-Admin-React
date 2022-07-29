@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 
-import {Navigate, Routes, Route} from 'react-router-dom'
+import {Navigate, Routes, Route, BrowserRouter} from 'react-router-dom'
 
 import {Layout} from 'antd'
 
@@ -33,12 +33,14 @@ export default function Admin() {
 
                 <Sider collapsible collapsed={collapsed}
                        onCollapse={value => setCollapsed(value)}>
-                    <LeftNav collapsed={collapsed} />
+                    <LeftNav collapsed={collapsed}/>
                 </Sider>
                 <Layout>
                     <Header>Header</Header>
-                    <Content style={{backgroundColor: 'white'}}>
+                    <Content style={{backgroundColor: 'white', margin: '20px 20px 0'}}>
                         <Routes>
+                            {/* 首次进入页面是重定向到/home路径 */}
+                            <Route path="*" element={<Navigate to='/home'/>}/>
                             <Route path='/home' element={<Home/>}></Route>
                             <Route path='/category' element={<Category/>}></Route>
                             <Route path='/product' element={<Product/>}></Route>
