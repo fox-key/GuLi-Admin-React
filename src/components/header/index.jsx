@@ -67,14 +67,15 @@ export default function Header() {
     const {pathname} = useLocation()
     const title = getTitle(pathname)
 
+    let timer = setInterval(() => {
+        setSystime(formateDate(Date.now()))
+    }, 1000)
+
     useEffect(() => {
         getWeather()
     }, [])
 
     useEffect(() => {
-        let timer = setInterval(() => {
-            setSystime(formateDate(Date.now()))
-        }, 1000)
         return clearInterval(timer)
     }, [])
 
@@ -84,7 +85,7 @@ export default function Header() {
         <div className="header-bottom">
             <div className="header-bottom-left">{title}</div>
             <div className="header-bottom-right"><span>{systime}</span><img src='' alt="weather"/>
-                <span>{weather}</span></div>
+                <span>{/*{weather}*/}</span></div>
         </div>
     </div>)
 }
