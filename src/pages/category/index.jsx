@@ -24,10 +24,17 @@ export default function Category() {
     const [loading, setLoading] = useState(false) // 标识是否正在加载中
     const [showStatus, setShowStatus] = useState(0) //是否显示对话框 0:都不显示  1:显示添加  2:显示更新
 
-    const category = [];
+    //点击修改的category的id
+    const [updateCategoryId, setUpdateCategoryId] = useState()
 
+    let categoryName = {};
+
+    // 添加分类form
     const formRef = React.createRef()
+    // 修改分类form
+    const updateFormRef = React.createRef()
     const [form] = Form.useForm()
+    const [form2] = Form.useForm()
 
     const getCategorys = async (pId) => {
         // 更新loading状态: 加载中
@@ -38,6 +45,7 @@ export default function Category() {
 
         //异步获取分类列表
         const result = await reqCategorys(partId)
+        console.log('getresult',result)
         //更新loading状态: 加载完成
         setLoading(false)
 
@@ -79,7 +87,10 @@ export default function Category() {
 
     /*显示修改的对话框*/
     const showUpdate = (category) => {
-        category = category
+        console.log('category', category)
+        categoryName=category
+        // setCategorys([category])
+        setUpdateCategoryId(category._id)
         setShowStatus(2)
     }
 
@@ -106,7 +117,15 @@ export default function Category() {
 
     /*更新分类 */
     const updateCategory = async () => {
-
+        const cname = updateFormRef.current?.getFieldsValue().categoryName
+        const res = await reqUpdateCategory({categoryId: updateCategoryId, categoryName: cname})
+        form2.resetFields()
+        console.log('updateResult',res)
+        getCategorys()
+        setShowStatus(0)
+        /*  if (result.status === 0) {
+              // 重新获取列表
+          }*/
     }
 
     useEffect(() => {
@@ -172,15 +191,27 @@ export default function Category() {
         )
     }
 
+    const uppdateCategoryForm = () => {
+        console.log('categoryName',categoryName)
+        return (
+            <Form onFinish={updateCategory} ref={updateFormRef} form={form2}>
+                <Item name='categoryName' initialValue={categoryName.categoryName}>
+                    <Input placeholder='请输入分类名称'/>
+                </Item>
+            </Form>
+        )
+    }
+
     return (
         <Card title={title} extra={extra}>
-            <Table dataSource={parentId === '0' ? categorys : subCategorys} columns={columns}   pagination={{defaultPageSize: 5, showQuickJumper: true}} />
+            <Table dataSource={parentId === '0' ? categorys : subCategorys} columns={columns}
+                   pagination={{defaultPageSize: 5, showQuickJumper: true}}/>
             <Modal title="添加分类" visible={showStatus === 1} onOk={onFinish}
                    onCancel={() => setShowStatus(0)} forceRender>
                 {addCategoryForm()}
             </Modal>
             <Modal title="修改分类" visible={showStatus === 2} onOk={updateCategory} onCancel={() => setShowStatus(0)}>
-                {/*<UpdateForm categoryName={category.name} setForm={form => this.form = form}/>*/}
+                {uppdateCategoryForm()}
             </Modal>
         </Card>
     )
