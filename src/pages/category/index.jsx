@@ -132,9 +132,9 @@ export default function Category() {
         getCategorys()
     }, [])
 
-    useEffect(() => {
-        getCategorys()
-    }, [parentId])
+    // useEffect(() => {
+    //     getCategorys()
+    // }, [parentId])
 
     // Card 的左侧标题
     const title = parentId === '0' ? '一级分类列表' : (

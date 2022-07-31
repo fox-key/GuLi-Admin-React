@@ -34,12 +34,12 @@ export default function Header() {
     const logout = () => {
         Modal.confirm({
             content: '确定退出吗?', onOk: () => {
-                console.log('OK')
+                console.log('确定')
                 storageUtils.removeUser()
                 memoryUtils.user = {}
                 navigate('/login')
             }, onCancel() {
-                console.log('Cancel')
+                console.log('取消')
             },
         })
     }
@@ -67,16 +67,19 @@ export default function Header() {
     const {pathname} = useLocation()
     const title = getTitle(pathname)
 
-    let timer = setInterval(() => {
-        setSystime(formateDate(Date.now()))
-    }, 1000)
+
 
     useEffect(() => {
         getWeather()
     }, [])
 
     useEffect(() => {
-        return clearInterval(timer)
+        let timer = setInterval(() => {
+            setSystime(formateDate(Date.now()))
+        }, 1000)
+        return ()=>{
+            clearInterval(timer)
+        }
     }, [])
 
     return (<div className="header">
