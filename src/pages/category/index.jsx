@@ -1,6 +1,6 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, createRef} from 'react'
 import PubSub from 'pubsub-js'
-import {Card, Table, Button, message, Modal} from 'antd'
+import {Card, Table, Button, message, Modal, Select, Form, Input} from 'antd'
 import {
     ArrowRightOutlined, PlusOutlined
 
@@ -12,6 +12,9 @@ import {reqCategorys, reqAddCategory, reqUpdateCategory} from '../../api/index'
 
 import './index.less'
 
+const Item = Form.Item;
+const {Option} = Select;
+
 /*分类管理路由组件*/
 export default function Category() {
     const [categorys, setCategorys] = useState([]) //一级分类列表
@@ -22,6 +25,9 @@ export default function Category() {
     const [showStatus, setShowStatus] = useState(0) //是否显示对话框 0:都不显示  1:显示添加  2:显示更新
 
     const category = [];
+
+    const formRef = React.createRef()
+    const [form] = Form.useForm()
 
     const getCategorys = async (pId) => {
         // 更新loading状态: 加载中
@@ -35,9 +41,10 @@ export default function Category() {
         //更新loading状态: 加载完成
         setLoading(false)
 
+
         if (result.status === 0) {
             const categorys = result.data
-            if (parentId === '0') {
+            if (partId === '0') {
                 //更新一级分类列表
                 setCategorys(categorys)
             } else {
@@ -52,10 +59,9 @@ export default function Category() {
 
     /*显示指定分类的子分类列表*/
     const showSubCates = (category) => {
-        console.log('category',category)
         setParentId(category._id)
         setParentName(category.name)
-       getCategorys()
+        getCategorys(category._id)
     }
 
     /*显示一级列表*/
@@ -77,23 +83,26 @@ export default function Category() {
         setShowStatus(2)
     }
 
-    /*添加分类*/
-    const addCategory = async () => {
-        //得到数据
-    }
 
-    const onFinish = (values) => {
-
+    // 添加分类
+    const onFinish = async (values) => {
+        // formRef.current?.getFieldsValue() 的值即为 form 表单中的数据
+        const pid = formRef.current?.getFieldsValue().parentId
+        const cname = formRef.current?.getFieldsValue().categoryName
+        setShowStatus(0)
+        // 重置表单
+        form.resetFields()
+        // 请求添加分类
+        const result = await reqAddCategory(pid, cname)
+        if (result.status === 0) {
+            if (pid === parentId) {
+                getCategorys()
+            } else if (pid === '0') {
+                getCategorys(pid)
+            }
+        }
     };
 
-    const handleOk = ()=>{
-        PubSub.subscribe('sendForm', (msg, data) => {
-            // console.log(msg, data);
-            console.log(data.current.getFiledValue)
-            console.log(222)
-        })
-
-    }
 
     /*更新分类 */
     const updateCategory = async () => {
@@ -104,7 +113,9 @@ export default function Category() {
         getCategorys()
     }, [])
 
-    // useEffect(()=>{},[])
+    useEffect(() => {
+        getCategorys()
+    }, [parentId])
 
     // Card 的左侧标题
     const title = parentId === '0' ? '一级分类列表' : (
@@ -114,10 +125,6 @@ export default function Category() {
             <span>{parentName}</span> </span>)
     // Card 的右侧 button
     const extra = (<Button type='primary' onClick={showAdd}><PlusOutlined/> 添加 </Button>)
-
-    const getAddFormValues = (form)=>{
-        console.log('form',form)
-    }
 
 
     const columns = [
@@ -130,12 +137,47 @@ export default function Category() {
                     {parentId === '0' ?
                         <LinkButton onClick={() => showSubCates(category)}>查看子分类</LinkButton> : null} </span>)
         }];
+
+    const addCategoryForm = () => {
+        return (
+            <Form
+                labelCol={{
+                    span: 6,
+                }}
+                ref={formRef}
+                wrapperCol={{
+                    span: 16,
+                }}
+                initialValues={{
+                    remember: true,
+                }}
+                onFinish={onFinish}
+                // onFinishFailed={onFinishFailed}
+                autoComplete="off"
+                form={form}
+            >
+                <Item label='所属分类' name='parentId'>
+                    <Select defaultValue='0'>
+                        <Option key='0' value='0' allowClear={true}>一级分类</Option>
+                        {categorys.map(c =>
+                            <Option key={c._id} value={c._id}>{c.name}</Option>)
+                        }
+                    </Select>
+                </Item>
+
+                <Item label='分类名称' name='categoryName'>
+                    <Input placeholder='请输入分类名称'/>
+                </Item>
+            </Form>
+        )
+    }
+
     return (
         <Card title={title} extra={extra}>
-            <Table dataSource={parentId === '0' ? categorys : subCategorys} columns={columns}/>
-            <Modal title="添加分类" visible={showStatus === 1} onOk={handleOk}
-                   onCancel={() => setShowStatus(0)}>
-                <AddForm categorys={categorys} parentId={parentId} />
+            <Table dataSource={parentId === '0' ? categorys : subCategorys} columns={columns}   pagination={{defaultPageSize: 5, showQuickJumper: true}} />
+            <Modal title="添加分类" visible={showStatus === 1} onOk={onFinish}
+                   onCancel={() => setShowStatus(0)} forceRender>
+                {addCategoryForm()}
             </Modal>
             <Modal title="修改分类" visible={showStatus === 2} onOk={updateCategory} onCancel={() => setShowStatus(0)}>
                 {/*<UpdateForm categoryName={category.name} setForm={form => this.form = form}/>*/}
