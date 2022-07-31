@@ -22,3 +22,23 @@ export const reqUpdateCategory = ({categoryId,categoryName})=>{
         categoryId,categoryName
     },'POST')
 }
+
+
+//商品管理
+// 根据分类id获取分类
+export const reqCategory = (categoryId)=>ajax('/api/manage/category/info',{categoryId})
+
+// 获取商品分页列表
+export const reqProducts = (pageNum, pageSize) => ajax('/api/manage/product/list', {pageNum, pageSize})
+
+// 根据 ID/Name 搜索产品分页列表
+export const reqSearchProducts = ({pageNum, pageSize, searchType, searchName}) => ajax('/api/manage/product/search', { pageNum, pageSize, [searchType]: searchName, })
+
+// 添加/更新商品
+export const reqAddOrUpdateProduct = (product) => ajax('/api/manage/product/' + (product._id ? 'update' : 'add'), product, 'post')
+
+// 对商品进行上架/下架处理
+export const reqUpdateProductStatus = (productId, status) => ajax('/api/manage/product/updateStatus', { productId, status }, 'POST')
+
+// 删除图片
+export const reqDeleteImg = (name) => ajax('/api/manage/img/delete', {name}, 'post')

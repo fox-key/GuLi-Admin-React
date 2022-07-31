@@ -17,6 +17,8 @@ import Bar from '../charts/bar'
 import Line from '../charts/line'
 import Pie from '../charts/pie'
 
+import './index.less'
+
 
 const {Footer, Sider, Content} = Layout
 
@@ -43,7 +45,7 @@ export default function Admin() {
                             <Route path="*" element={<Navigate to='/home'/>}/>
                             <Route path='/home' element={<Home/>}></Route>
                             <Route path='/category' element={<Category/>}></Route>
-                            <Route path='/product' element={<Product/>}></Route>
+                            <Route path='/product/*' element={<Product/>}></Route>
                             <Route path='/role' element={<Role/>}></Route>
                             <Route path='/user' element={<User/>}></Route>
                             <Route path='/charts/bar' element={<Bar/>}></Route>
