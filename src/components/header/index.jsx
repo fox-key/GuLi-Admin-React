@@ -27,6 +27,7 @@ export default function Header() {
 
     const getWeather = async () => {
         let res = await searchWeather('北京')
+        console.log(res)
         setWeather(res)
     }
 
@@ -87,8 +88,8 @@ export default function Header() {
         </div>
         <div className="header-bottom">
             <div className="header-bottom-left">{title}</div>
-            <div className="header-bottom-right"><span>{systime}</span><img src='' alt="weather"/>
-                <span>{/*{weather}*/}</span></div>
+            <div className="header-bottom-right"><span>{systime}</span>{/*<img src='' alt="weather"/>*/} &nbsp; &nbsp;
+                <span>{weather?.realtime?.info}</span></div>
         </div>
     </div>)
 }
