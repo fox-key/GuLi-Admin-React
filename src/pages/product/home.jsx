@@ -93,7 +93,7 @@ export default function ProductHome() {
                 return (
                     <span>
                             <LinkButton onClick={()=>{navigate('/product/detail',{replace:false,state:{product}})}}>详情</LinkButton>
-                            <LinkButton>修改</LinkButton>
+                            <LinkButton onClick={()=>{navigate('/product/addupdate',{replace:false,state:{product}})}}>修改</LinkButton>
                      </span>
                 )
             }
@@ -114,7 +114,7 @@ export default function ProductHome() {
     )
 
     const extra = (
-        <Button type='primary'><PlusOutlined/> 添加商品 </Button>
+        <Button type='primary' onClick={()=>{navigate('/product/addupdate')}}><PlusOutlined/> 添加商品 </Button>
     )
 
     useEffect(()=>{

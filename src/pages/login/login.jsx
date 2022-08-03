@@ -70,6 +70,7 @@ export default function Login() {
             callback() // 必须调用 callback }
         }
     }
+
     if(memoryUtils.user&&memoryUtils.user._id){
         return <Navigate to='/'/>
     }
