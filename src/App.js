@@ -21,8 +21,8 @@ export default class App extends React.Component {
             <>
                 <BrowserRouter>
                     <Routes>
-                        <Route path='/login' element={<Login/>}></Route>
-                        <Route path='/*' element={<Admin/>}></Route>
+                        <Route path='/login'  element={<Login/>}></Route>
+                        <Route path='/*'  element={<Admin/>}></Route>
                     </Routes>
                 </BrowserRouter></>
         )
