@@ -18,6 +18,8 @@ if(user&&user._id){
 }
 
 
+console.log('gitHub Edit')
+
 
 
 ReactDom.render(<App/>,document.getElementById('root'))
